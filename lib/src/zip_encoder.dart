@@ -60,7 +60,7 @@ class ZipEncoder {
         // Otherwise we need to compress it now.
         crc32 = getCrc32(file.content);
 
-        List<int> bytes = new Deflate(file.content, level: level).getBytes();
+        List<int> bytes = new ZLibCodec(level: level == null ? ZLibOption.DEFAULT_LEVEL : level, raw: true).encode(file.content);
         compressedData = new InputStream(bytes);
       }
 

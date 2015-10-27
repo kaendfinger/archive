@@ -2,6 +2,8 @@ library archive;
 
 import 'dart:collection';
 import 'dart:typed_data';
+import 'dart:io';
+import 'dart:convert';
 
 import 'package:crypto/crypto.dart' as crypto;
 

@@ -58,7 +58,8 @@ class ArchiveFile {
   void decompress() {
     if (_content == null) {
       if (_compressionType == DEFLATE) {
-        _content = new Inflate.buffer(_rawContent, size).getBytes();
+        var bytes = _rawContent.toUint8List();
+        _content = _zlibCodec.decode(bytes);
       } else {
         _content = _rawContent.toUint8List();
       }
@@ -86,4 +87,6 @@ class ArchiveFile {
   int _compressionType;
   InputStream _rawContent;
   List<int> _content;
+
+  static final ZLibCodec _zlibCodec = new ZLibCodec(raw: true);
 }
