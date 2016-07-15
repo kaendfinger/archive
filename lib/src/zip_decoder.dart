@@ -7,7 +7,7 @@ class ZipDecoder {
   ZipDirectory directory;
 
   Archive decodeBytes(List<int> data, {bool verify: false}) {
-    return decodeBuffer(new InputStream(data), verify: verify);
+    return decodeBuffer(new InputStream(_copyDataList(data)), verify: verify);
   }
 
   Archive decodeBuffer(InputStream input, {bool verify: false}) {

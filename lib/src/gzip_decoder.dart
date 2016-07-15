@@ -4,6 +4,7 @@ part of archive;
  * Decompress data with the gzip format decoder.
  */
 class GZipDecoder {
+  static bool USE_ENHANCED = true;
   static const int SIGNATURE = 0x8b1f;
   static const int DEFLATE = 8;
   static const int FLAG_TEXT = 0x01;
@@ -13,10 +14,18 @@ class GZipDecoder {
   static const int FLAG_COMMENT = 0x10;
 
   List<int> decodeBytes(List<int> data, {bool verify: false}) {
+    if (USE_ENHANCED) {
+      return GZIP.decode(data);
+    }
+
     return decodeBuffer(new InputStream(data), verify: verify);
   }
 
   List<int> decodeBuffer(InputStream input, {bool verify: false}) {
+    if (USE_ENHANCED) {
+      return GZIP.decode(input.toUint8List());
+    }
+
     // The GZip format has the following structure:
     // Offset   Length   Contents
     // 0      2 bytes  magic header  0x1f, 0x8b (\037 \213)

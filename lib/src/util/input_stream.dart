@@ -4,31 +4,71 @@ part of archive;
  * A buffer that can be read as a stream of bytes.
  */
 class InputStream {
-  final List<int> buffer;
+  List<int> _buffer;
+  List<int> get buffer => _buffer;
+
   int offset;
-  final int start;
-  final int byteOrder;
+  int _start;
+
+  int get start => _start;
+
+  int _byteOrder;
+  int get byteOrder => _byteOrder;
 
   /**
    * Create a InputStream for reading from a List<int>
    */
-  InputStream(data, {this.byteOrder: LITTLE_ENDIAN, int start: 0,
-              int length}) :
-    this.buffer = data is ByteData ? new Uint8List.view(data.buffer) : data,
-    this.start = start {
-    _length = length == null ? buffer.length : length;
-    offset = start;
+  InputStream(data, {int byteOrder, int start,
+              int length}) {
+    if (byteOrder == null) {
+      byteOrder = LITTLE_ENDIAN;
+    }
+
+    _byteOrder = byteOrder;
+
+    if (start == null) {
+      if (data is TypedData) {
+        _start = data.offsetInBytes;
+      } else {
+        _start = 0;
+      }
+    } else {
+      _start = start;
+    }
+
+    if (length != null) {
+      _length = length;
+    } else {
+      if (data is TypedData) {
+        _length = data.lengthInBytes;
+      } else if (data is List<int>) {
+        _length = data.length;
+      } else {
+        throw "Invalid data input.";
+      }
+    }
+
+    if (data is TypedData) {
+      _buffer = data.buffer.asUint8List();
+    } else if (data is List<int>) {
+      _buffer = data;
+    } else {
+      throw "Invalid data input.";
+    }
+
+    offset = _start;
   }
 
   /**
    * Create a copy of [other].
    */
-  InputStream.from(InputStream other) :
-    buffer = other.buffer,
-    offset = other.offset,
-    start = other.start,
-    _length = other._length,
-    byteOrder = other.byteOrder;
+  InputStream.from(InputStream other) {
+    this._buffer = other.buffer;
+    this.offset = other.offset;
+    this._start = other._start;
+    this._length = other._length;
+    this._byteOrder = other.byteOrder;
+  }
 
   /**
    *  The current read position relative to the start of the buffer.

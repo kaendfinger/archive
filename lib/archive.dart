@@ -36,3 +36,14 @@ part 'src/zip_decoder.dart';
 part 'src/zip_encoder.dart';
 part 'src/zlib_decoder.dart';
 part 'src/zlib_encoder.dart';
+
+Uint8List _copyDataList(List<int> data) {
+  if (data is Uint8List) {
+    if (data.offsetInBytes == 0) {
+      return data;
+    } else {
+      return data.toList();
+    }
+  }
+  return new Uint8List.fromList(data);
+}
