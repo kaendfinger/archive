@@ -42,7 +42,7 @@ Uint8List _copyDataList(List<int> data) {
     if (data.offsetInBytes == 0) {
       return data;
     } else {
-      return data.toList();
+      return new Uint8List.fromList(data.toList());
     }
   }
   return new Uint8List.fromList(data);
